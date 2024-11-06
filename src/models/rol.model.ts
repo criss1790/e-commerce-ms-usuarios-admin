@@ -23,6 +23,7 @@ export class Rol extends Entity {
   usuarios: Usuario[];
 
   @hasMany(() => Permiso, {through: {model: () => Permisorol, keyFrom: 'id_rol', keyTo: 'id_permiso'}})
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   tiene_permisos: Permiso[];
 
   constructor(data?: Partial<Rol>) {

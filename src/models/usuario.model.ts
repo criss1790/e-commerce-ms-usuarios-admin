@@ -1,4 +1,4 @@
-import {Entity, model, property, hasMany, belongsTo} from '@loopback/repository';
+import {belongsTo, Entity, model, property} from '@loopback/repository';
 import {Rol} from './rol.model';
 
 @model()
@@ -30,9 +30,9 @@ export class Usuario extends Entity {
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
   })
-  clave: string;
+  clave?: string;
 
   @property({
     type: 'boolean',
@@ -41,6 +41,7 @@ export class Usuario extends Entity {
   estado?: boolean;
 
   @belongsTo(() => Rol, {name: 'tiene_un'})
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   id_rol: string;
 
   constructor(data?: Partial<Usuario>) {
