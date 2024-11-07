@@ -18,7 +18,7 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {Usuario} from '../models';
+import {CambioClave, Credenciales, Usuario} from '../models';
 import {UsuarioRepository} from '../repositories';
 import {AdministradorClavesService} from '../services';
 
@@ -160,4 +160,96 @@ export class UsuarioController {
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.usuarioRepository.deleteById(id);
   }
+
+  /*
+    metodo para identificar un usuario por su correo
+  */
+
+  @post('/identificar-usuario')
+  @response(200, {
+    description: 'identificacion de usuarios',
+    content: {'application/json': {schema: getModelSchemaRef(Credenciales)}},
+  })
+  async identificarUsuario(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Credenciales, {
+            title: 'Identificar Usuario',
+
+          }),
+        },
+      },
+    })
+    credenciales: Credenciales,
+  ): Promise<object | null> {
+    const usuario = await this.usuarioRepository.findOne({
+      where: {
+        correo: credenciales.usuario,
+        clave: credenciales.clave
+
+      }
+    });
+    if (usuario) {
+      //se retornara un token;
+    }
+    return usuario;
+  }
+
+
+
+  @post('/cambiar-clave')
+  @response(200, {
+    description: 'cambio de clave de usuarios',
+    content: {'application/json': {schema: getModelSchemaRef(CambioClave)}},
+  })
+  async cambiarClave(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Credenciales, {
+            title: 'cambio de clave del usuario',
+
+          }),
+        },
+      },
+    })
+    credencialesClave: CambioClave,
+  ): Promise<Boolean> {
+    const respuesta = await this.servicioClaves.CambiarClave(credencialesClave);
+
+    if (respuesta) {
+
+      //enviar correo con la nueva clave por medio de notificaciones
+    }
+    return respuesta;
+  }
+
+
+
+  @post('/recuperar-clave')
+  @response(200, {
+    description: 'recuparacion de clave de usuarios',
+    content: {'application/json': {schema: {}}},
+  })
+  async recupaerarClave(
+    @requestBody({
+      content: {
+        'application/json': {
+
+
+        },
+      },
+    })
+    correo: string,
+  ): Promise<Usuario | null> {
+    const usuario = await this.servicioClaves.recuperarClave(correo);
+
+    if (usuario) {
+
+      //enviar correo con la nueva clave por medio de notificaciones
+    }
+    return usuario;
+  }
+
 }
