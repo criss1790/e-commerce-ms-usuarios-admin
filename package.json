@@ -55,11 +55,13 @@
     "@loopback/rest": "^14.0.7",
     "@loopback/rest-explorer": "^7.0.7",
     "@loopback/service-proxy": "^7.0.7",
+    "@types/node-fetch": "^2.6.11",
     "crypto-js": "^4.2.0",
     "generate-password": "^1.7.1",
     "loopback-connector-mongodb": "^6.2.0",
     "mongodb": "^6.10.0",
     "ms-usuarios-admin": "file:",
+    "node-fetch": "^2.7.0",
     "tslib": "^2.0.0"
   },
   "devDependencies": {

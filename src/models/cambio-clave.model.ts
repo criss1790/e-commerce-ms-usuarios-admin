@@ -6,18 +6,22 @@ export class CambioClave extends Model {
     type: 'string',
     required: true,
   })
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   id_usuario: string;
 
   @property({
     type: 'string',
     required: true,
   })
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   clave_actual: string;
 
   @property({
     type: 'string',
     required: true,
   })
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   nueva_clave: string;
 
 

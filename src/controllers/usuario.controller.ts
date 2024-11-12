@@ -18,16 +18,19 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {CambioClave, Credenciales, Usuario} from '../models';
+import {Configuracion} from '../llaves/configuracion';
+import {CambioClave, Credenciales, CredencialesRecuperarClave, NotificacionCorreo, NotificacionSms, Usuario} from '../models';
 import {UsuarioRepository} from '../repositories';
-import {AdministradorClavesService} from '../services';
+import {AdministradorClavesService, NotificacionesService} from '../services';
 
 export class UsuarioController {
   constructor(
     @repository(UsuarioRepository)
     public usuarioRepository: UsuarioRepository,
     @service(AdministradorClavesService)
-    public servicioClaves: AdministradorClavesService
+    public servicioClaves: AdministradorClavesService,
+    @service(NotificacionesService)
+    public servicioNotificaciones: NotificacionesService
   ) { }
 
   @post('/usuarios')
@@ -54,7 +57,11 @@ export class UsuarioController {
     usuario.clave = claveCifrada;
     const usuarioCreado = await this.usuarioRepository.create(usuario);
     if (usuarioCreado) {
-      //Enviar correo con la clave
+      const datos = new NotificacionCorreo();
+      datos.destinatario = usuario.correo;
+      datos.asunto = Configuracion.asuntoCreacionUsuario;
+      datos.mensaje = `${Configuracion.saludo} ${usuario.nombre} <br /> ${Configuracion.mensajeCreacionUsuario} ${clave}`;
+      this.servicioNotificaciones.enviarCorreo(datos);
 
     }
     return usuarioCreado;
@@ -191,6 +198,7 @@ export class UsuarioController {
       }
     });
     if (usuario) {
+      usuario.clave = '';
       //se retornara un token;
     }
     return usuario;
@@ -216,16 +224,16 @@ export class UsuarioController {
     })
     credencialesClave: CambioClave,
   ): Promise<Boolean> {
-    const respuesta = await this.servicioClaves.CambiarClave(credencialesClave);
-
-    if (respuesta) {
-
-      //enviar correo con la nueva clave por medio de notificaciones
+    const usuario = await this.servicioClaves.CambiarClave(credencialesClave);
+    if (usuario) {
+      const datos = new NotificacionCorreo();
+      datos.destinatario = usuario.correo;
+      datos.asunto = Configuracion.asuntoCambioClave;
+      datos.mensaje = `${Configuracion.saludo} ${usuario.nombre}<br />${Configuracion.mensajeCambioClave}`;
+      this.servicioNotificaciones.enviarCorreo(datos);
     }
-    return respuesta;
+    return usuario != null;
   }
-
-
 
   @post('/recuperar-clave')
   @response(200, {
@@ -241,15 +249,29 @@ export class UsuarioController {
         },
       },
     })
-    correo: string,
+    credenciales: CredencialesRecuperarClave,
+
   ): Promise<Usuario | null> {
-    const usuario = await this.servicioClaves.recuperarClave(correo);
+    const usuario = await this.usuarioRepository.findOne({
+      where: {
+        correo: credenciales.correo,
 
+
+      }
+    });
     if (usuario) {
+      const clave = this.servicioClaves.crearClaveAleatoria();
+      console.log(clave);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const claveCifrada = this.servicioClaves.cifrarTexto(clave);
+      usuario.clave= this.servicioClaves.cifrarTexto(clave);
+      await this.usuarioRepository.updateById(usuario._id, usuario);
+      const datos = new NotificacionSms();
+      datos.destino = usuario.celular;
+      datos.mensaje = `${Configuracion.saludo} ${usuario.nombre} <br /> ${Configuracion.mensajeRecuperarClave} ${clave}`;
+      this.servicioNotificaciones.enviarSms(datos);
 
-      //enviar correo con la nueva clave por medio de notificaciones
     }
     return usuario;
   }
-
-}
+  }
