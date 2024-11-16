@@ -1,0 +1,11 @@
+services:
+
+  usuarios-admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - MONGO_URL=mongodb+srv://Ecommerce-usuarios-admin:xGnUFYVISjB4Pp9V@cluster0.l1qxo.mongodb.net/Ecommerce-usuarios-admin?retryWrites=false&w=majority&ssl=true

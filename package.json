@@ -57,6 +57,7 @@
     "@loopback/service-proxy": "^7.0.7",
     "@types/node-fetch": "^2.6.11",
     "crypto-js": "^4.2.0",
+    "dotenv": "^16.4.5",
     "generate-password": "^1.7.1",
     "loopback-connector-mongodb": "^6.2.0",
     "mongodb": "^6.10.0",

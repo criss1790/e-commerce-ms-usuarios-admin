@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: ms-usuarios-admin
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        role: ms-usuarios-admin
+    spec:
+      containers:
+        - name: ms-usuarios-admin
+          image: criss1790/ms-usuarios-admins:v2
+          ports:
+            - containerPort: 80
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: MONGO_URL
+              value: mongodb+srv://Ecommerce-usuarios-admin:xGnUFYVISjB4Pp9V@cluster0.l1qxo.mongodb.net/Ecommerce-usuarios-admin?retryWrites=false&w=majority&ssl=true
+

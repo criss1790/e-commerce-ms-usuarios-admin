@@ -264,7 +264,7 @@ export class UsuarioController {
       console.log(clave);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const claveCifrada = this.servicioClaves.cifrarTexto(clave);
-      usuario.clave= this.servicioClaves.cifrarTexto(clave);
+      usuario.clave = this.servicioClaves.cifrarTexto(clave);
       await this.usuarioRepository.updateById(usuario._id, usuario);
       const datos = new NotificacionSms();
       datos.destino = usuario.celular;
@@ -274,4 +274,4 @@ export class UsuarioController {
     }
     return usuario;
   }
-  }
+}
