@@ -18,5 +18,5 @@ spec:
             - name: NODE_ENV
               value: production
             - name: MONGO_URL
-              value: mongodb+srv://Ecommerce-usuarios-admin:xGnUFYVISjB4Pp9V@cluster0.l1qxo.mongodb.net/Ecommerce-usuarios-admin?retryWrites=false&w=majority&ssl=true
+              value: mongodb+srv://Ecommerce-usuarios-admin:xGnUFYVISjB4Pp9V@cluster0.l1qxo.mongodb.net/Ecommerce-usuarios-admin?retryWrites=false&w=majority&ssl=false
 

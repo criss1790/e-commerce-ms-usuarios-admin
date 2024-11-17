@@ -22,6 +22,14 @@ export class MongodbDataSource extends juggler.DataSource
     @inject('datasources.config.mongodb', {optional: true})
     dsConfig: object = config,
   ) {
+
+    try {
+      console.log("conexion exitosa a mongo");
     super(dsConfig);
+  }
+  catch (error) {
+    console.log("error en la conexion a mongo");
+    console.log(error);
+  }
   }
 }
